@@ -1,0 +1,42 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    const { fullName, nikOrId, district, village, commodity, membershipStatus, latitude, longitude, address, bioOrNotes } = body;
+
+    if (!fullName || !district || !village || !commodity || !latitude || !longitude) {
+      return NextResponse.json(
+        { success: false, message: "Field utama (nama, kecamatan, desa, komoditas, koordinat) wajib diisi" },
+        { status: 400 }
+      );
+    }
+
+    const participant = await prisma.participant.create({
+      data: {
+        fullName,
+        nikOrId: nikOrId || null,
+        district,
+        village,
+        commodity,
+        membershipStatus: membershipStatus || "ACTIVE",
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        address: address || null,
+        bioOrNotes: bioOrNotes || null,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+      data: participant,
+      message: "Data peserta berhasil ditambahkan",
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, message: error.message },
+      { status: 500 }
+    );
+  }
+}
