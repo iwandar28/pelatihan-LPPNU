@@ -9,8 +9,8 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="space-y-4 md:col-span-1">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold">
-                <Sprout className="w-6 h-6" />
+              <div className="w-10 h-10 rounded-xl bg-white p-0.5 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
+                <img src="/logo.png" alt="Logo LPPNU" className="w-full h-full object-contain" />
               </div>
               <span className="font-bold text-lg text-white">LPPNU Magelang</span>
             </div>
@@ -24,7 +24,7 @@ export default function Footer() {
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider">Navigasi Utama</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="hover:text-emerald-400 transition-colors">Beranda & Profil</Link></li>
-              <li><Link href="/mapping-peserta" className="hover:text-emerald-400 transition-colors">Mapping Peserta</Link></li>
+              <li><Link href="/mapping-peserta" className="hover:text-emerald-400 transition-colors">Mapping Kader Petani NU</Link></li>
               <li><Link href="/pemetaan-lahan" className="hover:text-emerald-400 transition-colors">Pemetaan Lahan GIS</Link></li>
               <li><Link href="/berita" className="hover:text-emerald-400 transition-colors">Berita Terkini</Link></li>
               <li><Link href="/donasi" className="hover:text-emerald-400 transition-colors">Donasi Hijau</Link></li>

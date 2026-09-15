@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { createSession } from "@/lib/session";
 
 export async function POST(request: Request) {
   try {
@@ -32,16 +33,32 @@ export async function POST(request: Request) {
       );
     }
 
-    return NextResponse.json({
+    // Buat JWT Session
+    const payload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+    
+    const { session, expires } = await createSession(payload);
+
+    const response = NextResponse.json({
       success: true,
-      data: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      },
+      data: payload,
       message: "Login admin berhasil",
     });
+
+    // Set cookie
+    response.cookies.set("admin_session", session, {
+      expires,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      sameSite: "lax",
+    });
+
+    return response;
   } catch (error: any) {
     return NextResponse.json(
       { success: false, message: error.message },

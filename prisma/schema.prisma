@@ -12,7 +12,7 @@ model User {
   id        String   @id @default(uuid())
   name      String
   email     String   @unique
-  password  String   // Hashed password (bcrypt)
+  password  String // Hashed password (bcrypt)
   role      String   @default("ADMIN") // ADMIN, SUPER_ADMIN
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -20,26 +20,26 @@ model User {
 
 // 2. Statistik & Info Profil (Disimpan dalam 1 baris konstan atau key-value)
 model ProfileStatistic {
-  id               Int      @id @default(1)
-  shortInfoGis     String   @db.Text // Informasi singkat geospasial LPPNU
-  totalLandAreaGis Float    // Total luas lahan GIS (dalam Hektar)
-  totalTrainees    Int      // Jumlah peserta latihan binaan
-  totalTreesDonated Int     // Jumlah pohon donasi
-  totalFarmerGroups Int     // Jumlah kelompok tani binaan
-  vision           String   @db.Text // Visi LPPNU Magelang
-  mission          String   @db.Text // Misi LPPNU Magelang
-  updatedAt        DateTime @updatedAt
+  id                Int      @id @default(1)
+  shortInfoGis      String   @db.Text // Informasi singkat geospasial LPPNU
+  totalLandAreaGis  Float // Total luas lahan GIS (dalam Hektar)
+  totalTrainees     Int // Jumlah peserta latihan binaan
+  totalTreesDonated Int // Jumlah pohon donasi
+  totalFarmerGroups Int // Jumlah kelompok tani binaan
+  vision            String   @db.Text // Visi LPPNU Magelang
+  mission           String   @db.Text // Misi LPPNU Magelang
+  updatedAt         DateTime @updatedAt
 }
 
 // 3. Struktur Kepengurusan LPPNU
 model BoardMember {
-  id          String   @id @default(uuid())
-  name        String
-  position    String   // Contoh: Ketua PC LPPNU, Sekretaris, Divisi GIS
-  photoUrl    String?  // Path foto di /uploads/board/...
-  orderIndex  Int      @default(0) // Untuk mengurutkan tampilan struktur
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(uuid())
+  name       String
+  position   String // Contoh: Ketua PC LPPNU, Sekretaris, Divisi GIS
+  photoUrl   String? // Path foto di /uploads/board/...
+  orderIndex Int      @default(0) // Untuk mengurutkan tampilan struktur
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // 4. Berita / Artikel (Menggunakan UUID sebagai pengganti slug demi keamanan)
@@ -48,7 +48,7 @@ model News {
   title       String
   uuid        String   @unique @default(uuid()) // Identifier unik URL berita
   content     String   @db.LongText
-  imageUrl    String?  // Gambar utama berita
+  imageUrl    String? // Gambar utama berita
   author      String   @default("Admin LPPNU")
   isPublished Boolean  @default(true)
   publishedAt DateTime @default(now())
@@ -58,43 +58,60 @@ model News {
 
 // 5. Peserta Pelatihan & Mapping Lokasi
 model Participant {
-  id               String   @id @default(uuid())
+  id               String           @id @default(uuid())
   fullName         String
-  nikOrId          String?  // Opsional untuk identitas
-  district         String   // Kecamatan di Kab. Magelang
-  village          String   // Desa / Kelurahan
-  commodity        String   // Komoditas Tani (misal: Padi, Hortikultura, Kopi)
+  nikOrId          String? // Opsional untuk identitas
+  institution      String? // Asal Lembaga / Banom
+  district         String // Kecamatan di Kab. Magelang
+  village          String // Desa / Kelurahan
+  commodity        String // Komoditas Tani (misal: Padi, Hortikultura, Kopi)
   membershipStatus MembershipStatus @default(ACTIVE)
-  latitude         Float    // Koordinat marker Y
-  longitude        Float    // Koordinat marker X
-  address          String?  @db.Text
-  bioOrNotes       String?  @db.Text
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  latitude         Float // Koordinat marker Y
+  longitude        Float // Koordinat marker X
+  address          String?          @db.Text
+  phone            String? // Nomor HP / WA
+  idCardPhoto      String? // Foto KTP (URL)
+  farmerGroup      String? // Nama Kelompok Tani
+  certificateScan  String? // Scan Piagam Kelompok tani (URL)
+  trainingAttended String?          @db.Text // Data pelatihan yang dikuti
+  trainingDate     DateTime? // Tanggal pelatihan
+  bioOrNotes       String?          @db.Text
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
 }
 
 enum MembershipStatus {
-  ACTIVE             // Aktif
-  ALUMNI             // Alumni
-  FIELD_COMPANION    // Pendamping Lapangan
+  ACTIVE // Aktif
+  ALUMNI // Alumni
+  FIELD_COMPANION // Pendamping Lapangan
+}
+
+enum LandStatus {
+  PRIBADI
+  WAKAF
+  MITRA
+  SEWA
+  HIBAH
+  ASSET_PCNU
 }
 
 // 6. Pemetaan Lahan GIS (Polygon & Multi-layer Data)
 model GisLandMap {
-  id             String   @id @default(uuid())
-  title          String   // Nama lahan / blok
-  farmerGroup    String   // Nama Kelompok Tani binaan
-  district       String   // Kecamatan
-  village        String   // Desa
-  areaHectares   Float    // Luas lahan (Ha)
-  commodity      String   // Komoditas utama
-  inputType      GisInputType @default(MANUAL_POLYGON)
-  geoJsonData    String   @db.LongText // Simpan struktur GeoJSON Polygon
-  colorHex       String   @default("#22c55e")
-  centerLat      Float?   // Titik tengah lahan
-  centerLng      Float?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id           String       @id @default(uuid())
+  ownerName    String // Nama Pemilik
+  status       LandStatus // Status Kepemilikan
+  farmerGroup  String // Nama Kelompok Tani binaan
+  address      String       @db.Text // Alamat
+  areaHectares Float // Luas lahan (Ha)
+  commodity    String // Komoditas utama
+  cultivator   String // Penggarap
+  inputType    GisInputType @default(KML_UPLOAD)
+  geoJsonData  String       @db.LongText // Simpan struktur GeoJSON Polygon dari KML
+  colorHex     String       @default("#22c55e")
+  centerLat    Float? // Titik tengah lahan
+  centerLng    Float?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 enum GisInputType {
@@ -105,28 +122,28 @@ enum GisInputType {
 
 // 7. Target & Data Kampanye Donasi Hijau
 model DonationCampaign {
-  id             Int      @id @default(1)
-  title          String   @default("Donasi Penghijauan & Pemberdayaan Petani LPPNU")
-  description    String   @db.Text
-  targetAmount   Decimal  @db.Decimal(15, 2)
-  bankName       String
-  bankAccount    String
-  accountHolder  String
-  updatedAt      DateTime @updatedAt
+  id            Int      @id @default(1)
+  title         String   @default("Donasi Penghijauan & Pemberdayaan Petani LPPNU")
+  description   String   @db.Text
+  targetAmount  Decimal  @db.Decimal(15, 2)
+  bankName      String
+  bankAccount   String
+  accountHolder String
+  updatedAt     DateTime @updatedAt
 }
 
 // 8. Transaksi Donasi (Kirim Bukti Transfer)
 model DonationTransaction {
-  id             String         @id @default(uuid())
-  donorName      String
-  donorEmail     String?
-  donorPhone     String?
-  amount         Decimal        @db.Decimal(15, 2)
-  proofImageUrl  String         // Foto bukti transfer
-  status         DonationStatus @default(PENDING) // PENDING, APPROVED, REJECTED
-  adminNotes     String?        @db.Text
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
+  id            String         @id @default(uuid())
+  donorName     String
+  donorEmail    String?
+  donorPhone    String?
+  amount        Decimal        @db.Decimal(15, 2)
+  proofImageUrl String // Foto bukti transfer
+  status        DonationStatus @default(PENDING) // PENDING, APPROVED, REJECTED
+  adminNotes    String?        @db.Text
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 enum DonationStatus {

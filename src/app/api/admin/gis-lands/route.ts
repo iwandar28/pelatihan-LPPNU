@@ -4,24 +4,25 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, farmerGroup, district, village, areaHectares, commodity, inputType, geoJsonData, colorHex, centerLat, centerLng } = body;
+    const { ownerName, status, farmerGroup, address, areaHectares, commodity, cultivator, inputType, geoJsonData, colorHex, centerLat, centerLng } = body;
 
-    if (!title || !district || !village || !geoJsonData) {
+    if (!ownerName || !status || !address || !geoJsonData) {
       return NextResponse.json(
-        { success: false, message: "Judul, kecamatan, desa, dan data GeoJSON wajib diisi" },
+        { success: false, message: "Nama pemilik, status, alamat, dan data GeoJSON wajib diisi" },
         { status: 400 }
       );
     }
 
     const land = await prisma.gisLandMap.create({
       data: {
-        title,
+        ownerName,
+        status,
         farmerGroup: farmerGroup || "Kelompok Tani Binaan",
-        district,
-        village,
+        address,
         areaHectares: parseFloat(areaHectares || "0"),
         commodity: commodity || "Padi / Hortikultura",
-        inputType: inputType || "MANUAL_POLYGON",
+        cultivator: cultivator || "-",
+        inputType: inputType || "KML_UPLOAD",
         geoJsonData: typeof geoJsonData === "string" ? geoJsonData : JSON.stringify(geoJsonData),
         colorHex: colorHex || "#22c55e",
         centerLat: centerLat ? parseFloat(centerLat) : null,

@@ -7,8 +7,8 @@ import Link from "next/link";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("admin@lppnumagelang.org");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,8 +26,6 @@ export default function AdminLoginPage() {
 
       const json = await res.json();
       if (json.success) {
-        // Save simple admin session in localStorage for demo
-        localStorage.setItem("lppnu_admin_user", JSON.stringify(json.data));
         router.push("/admin");
       } else {
         setError(json.message || "Login gagal. Periksa kembali email & password Anda.");
@@ -43,8 +41,8 @@ export default function AdminLoginPage() {
     <div className="min-h-[80vh] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-md bg-white p-8 rounded-3xl border border-slate-200 shadow-xl space-y-6">
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center font-bold">
-            <ShieldCheck className="w-7 h-7" />
+          <div className="w-16 h-16 rounded-2xl bg-white p-1 mx-auto flex items-center justify-center shadow-md border border-slate-100 overflow-hidden">
+            <img src="/logo.png" alt="Logo LPPNU" className="w-full h-full object-contain" />
           </div>
           <h2 className="text-2xl font-extrabold text-slate-900">Login Administrator</h2>
           <p className="text-xs text-slate-500">Area khusus pengelola & admin LPPNU Kabupaten Magelang</p>
@@ -84,12 +82,6 @@ export default function AdminLoginPage() {
                 className="w-full pl-9 pr-3 py-2.5 rounded-xl text-xs border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50/50"
               />
             </div>
-          </div>
-
-          <div className="bg-emerald-50 p-3 rounded-xl border border-emerald-200 text-[11px] text-emerald-900">
-            <strong>Kredensial Default Demo:</strong><br />
-            Email: <code className="bg-emerald-100 px-1 rounded">admin@lppnumagelang.org</code><br />
-            Password: <code className="bg-emerald-100 px-1 rounded">admin123</code>
           </div>
 
           <button

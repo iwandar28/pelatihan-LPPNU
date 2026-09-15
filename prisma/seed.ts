@@ -7,13 +7,16 @@ async function main() {
   console.log("🌱 Starting Database Seeding for LPPNU Magelang...");
 
   // 1. Seed Admin User
-  const hashedPassword = await bcrypt.hash("admin123", 10);
+  const hashedPassword = await bcrypt.hash("admin", 10);
   const admin = await prisma.user.upsert({
-    where: { email: "admin@lppnumagelang.org" },
-    update: {},
+    where: { email: "[EMAIL_ADDRESS]" },
+    update: {
+      password: hashedPassword,
+      name: "admin",
+    },
     create: {
-      name: "Admin PC LPPNU Magelang",
-      email: "admin@lppnumagelang.org",
+      name: "admin",
+      email: "[EMAIL_ADDRESS]",
       password: hashedPassword,
       role: "ADMIN",
     },
@@ -193,13 +196,14 @@ async function main() {
   await prisma.gisLandMap.deleteMany({});
   await prisma.gisLandMap.create({
     data: {
-      title: "Lahan Percontohan Padi Organik Poktan Subur Makmur",
+      ownerName: "Bapak Ahmad (Lahan Percontohan Padi Organik)",
+      status: "MITRA",
       farmerGroup: "Poktan Subur Makmur",
-      district: "Muntilan",
-      village: "Poboyo",
+      address: "Poboyo, Muntilan",
       areaHectares: 14.5,
       commodity: "Padi Organik",
-      inputType: "MANUAL_POLYGON",
+      cultivator: "Anggota Poktan",
+      inputType: "KML_UPLOAD",
       colorHex: "#22c55e",
       centerLat: -7.5815,
       centerLng: 110.2984,
@@ -224,13 +228,14 @@ async function main() {
 
   await prisma.gisLandMap.create({
     data: {
-      title: "Kawasan Konservasi & Kebun Buah Alpukat Merbabu",
+      ownerName: "PCNU Magelang (Kawasan Konservasi & Kebun Buah Alpukat Merbabu)",
+      status: "ASSET_PCNU",
       farmerGroup: "Poktan Tani Lestari",
-      district: "Sawangan",
-      village: "Krogowanan",
+      address: "Krogowanan, Sawangan",
       areaHectares: 28.2,
       commodity: "Alpukat & Kopi",
-      inputType: "GEOJSON_UPLOAD",
+      cultivator: "Warga Sekitar",
+      inputType: "KML_UPLOAD",
       colorHex: "#16a34a",
       centerLat: -7.5342,
       centerLng: 110.3541,

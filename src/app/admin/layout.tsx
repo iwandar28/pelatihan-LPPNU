@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, HeartHandshake, MapPin, Sprout, Newspaper, LogOut, ShieldCheck, ArrowRight } from "lucide-react";
+import { LayoutDashboard, MapPin, Sprout, LogOut, ShieldCheck, Users } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -14,29 +14,34 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Skip auth check for login page
     if (pathname === "/admin/login") return;
 
-    const session = localStorage.getItem("lppnu_admin_user");
-    if (!session) {
-      router.push("/admin/login");
-    } else {
-      setAdminUser(JSON.parse(session));
-    }
+    fetch("/api/admin/me")
+      .then((res) => res.json())
+      .then((json) => {
+        if (!json.success) {
+          router.push("/admin/login");
+        } else {
+          setAdminUser(json.data);
+        }
+      })
+      .catch(() => {
+        router.push("/admin/login");
+      });
   }, [pathname, router]);
 
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
 
-  const handleLogout = () => {
-    localStorage.removeItem("lppnu_admin_user");
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" });
     router.push("/admin/login");
   };
 
   const navItems = [
     { label: "Dashboard Overview", href: "/admin", icon: LayoutDashboard },
-    { label: "Verifikasi Donasi", href: "/admin/donations", icon: HeartHandshake },
     { label: "Kelola Peserta Tani", href: "/admin/participants", icon: MapPin },
     { label: "Kelola Lahan GIS", href: "/admin/gis-lands", icon: Sprout },
-    { label: "Kelola Berita", href: "/admin/news", icon: Newspaper },
+    { label: "Kelola Admin", href: "/admin/users", icon: Users },
   ];
 
   return (
@@ -46,8 +51,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div>
           {/* Sidebar Header */}
           <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-600 flex items-center justify-center text-white font-bold">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-white p-0.5 flex items-center justify-center shrink-0 overflow-hidden shadow-sm">
+              <img src="/logo.png" alt="Logo LPPNU" className="w-full h-full object-contain" />
             </div>
             <div>
               <h3 className="font-bold text-white text-sm">Dashboard Admin</h3>

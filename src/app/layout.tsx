@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: "LPPNU Magelang - Website Pelatihan & Geospasial Pertanian",
   description:
     "Website resmi Lembaga Pengembangan Pertanian Nahdlatul Ulama Kabupaten Magelang. Informasi Geospasial GIS, Pemetaan Lahan, Sebaran Peserta Tani, Donasi Hijau, dan Berita.",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({

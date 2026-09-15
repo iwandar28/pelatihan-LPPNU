@@ -11,10 +11,8 @@ export default function Navbar() {
 
   const navItems = [
     { label: "Beranda & Profil", href: "/", icon: Sprout },
-    { label: "Mapping Peserta", href: "/mapping-peserta", icon: MapPin },
+    { label: "Mapping Kader Petani NU", href: "/mapping-peserta", icon: MapPin },
     { label: "Pemetaan Lahan GIS", href: "/pemetaan-lahan", icon: Sprout },
-    { label: "Berita", href: "/berita", icon: Newspaper },
-    { label: "Donasi Hijau", href: "/donasi", icon: HeartHandshake },
   ];
 
   return (
@@ -23,8 +21,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo Brand */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-700 to-emerald-500 flex items-center justify-center text-white font-bold shadow-md shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-              <Sprout className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-xl bg-white p-0.5 border border-emerald-100 shadow-xs flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform">
+              <img src="/logo.png" alt="Logo LPPNU" className="w-full h-full object-contain" />
             </div>
             <div>
               <span className="font-extrabold text-lg text-emerald-950 block leading-tight tracking-tight">
